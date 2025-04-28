@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dynamic Form Schema",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "layout": {
+            "type": "object",
+            "properties": {
+              "columns": { "type": "integer", "minimum": 1 }
+            },
+            "required": ["columns"]
+          },
+          "elements": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/Element" }
+          }
+        },
+        "required": ["id", "title", "elements"]
+      }
+    }
+  },
+  "required": ["id", "title", "steps"],
+  "definitions": {
+    "Element": {
+      "type": "object",
+      "oneOf": [
+        { "$ref": "#/definitions/Field" },
+        { "$ref": "#/definitions/Header" },
+        { "$ref": "#/definitions/Text" },
+        { "$ref": "#/definitions/Quote" }
+      ]
+    },
+    "Field": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "field" },
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "tooltip": { "type": "string" },
+        "fieldType": {
+          "type": "string",
+          "enum": [
+            "text", "number", "email", "date", "checkbox", "radio", "select", "textarea", "file", "image", "signature", "richtext"
+          ]
+        },
+        "validation": { "$ref": "#/definitions/Validation" },
+        "visibilityCondition": { "$ref": "#/definitions/VisibilityCondition" },
+        "dataSource": { "$ref": "#/definitions/DataSource" },
+        "layout": {
+          "type": "object",
+          "properties": {
+            "colSpan": { "type": "integer", "minimum": 1 }
+          }
+        }
+      },
+      "required": ["type", "id", "label", "fieldType"]
+    },
+    "Header": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "header" },
+        "text": { "type": "string" }
+      },
+      "required": ["type", "text"]
+    },
+    "Text": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "text" },
+        "text": { "type": "string" }
+      },
+      "required": ["type", "text"]
+    },
+    "Quote": {
+      "type": "object",
+      "properties": {
+        "type": { "const": "quote" },
+        "text": { "type": "string" }
+      },
+      "required": ["type", "text"]
+    },
+    "Validation": {
+      "type": "object",
+      "properties": {
+        "required": { "type": "boolean" },
+        "minLength": { "type": "integer", "minimum": 0 },
+        "maxLength": { "type": "integer", "minimum": 1 },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "pattern": { "type": "string" },
+        "custom": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "VisibilityCondition": {
+      "type": "object",
+      "properties": {
+        "operator": { "type": "string", "enum": ["AND", "OR", "NOT"] },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fieldId": { "type": "string" },
+              "comparison": { "type": "string", "enum": ["equals", "notEquals", "greaterThan", "lessThan", "includes"] },
+              "value": {}
+            },
+            "required": ["fieldId", "comparison", "value"]
+          }
+        }
+      },
+      "required": ["operator", "conditions"]
+    },
+    "DataSource": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "method": { "type": "string", "enum": ["GET", "POST"] },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "mapping": {
+          "type": "object",
+          "properties": {
+            "labelField": { "type": "string" },
+            "valueField": { "type": "string" }
+          },
+          "required": ["labelField", "valueField"]
+        }
+      },
+      "required": ["url", "method", "mapping"]
+    }
+  }
+}

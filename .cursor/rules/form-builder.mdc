@@ -1,0 +1,33 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+title: "Dynamic Form Structure and Rules"
+type: "Always"
+description: "Defines the structure and logic of dynamic forms for use in Cursor AI."
+---
+
+# Form Structure
+
+- The form comprises multiple steps (`steps`), each with an `id`, `title`, and `description`.
+- Each step contains a list of elements (`elements`), which can be of types: `field`, `header`, `text`, or `quote`.
+
+# Fields
+
+- Supported `fieldType` values: `text`, `number`, `email`, `date`, `checkbox`, `radio`, `select`, `textarea`, `file`, `image`, `signature`, `richtext`.
+- Validation rules (`validation`) include: `required`, `minLength`, `maxLength`, `min`, `max`, `pattern`, `custom`.
+- `visibilityCondition` allows fields to be shown or hidden based on other fields' values using logical operators (`AND`, `OR`, `NOT`).
+- `select` fields can fetch options from external sources using `dataSource` with properties: `url`, `method`, `headers`, and `mapping`.
+
+# Conditional Navigation
+
+- `nextStepCondition` defines logic to determine the next step based on user responses.
+- Each condition includes `fieldId`, `comparison`, `value`, and `goToStep`.
+- If no conditions are met, navigation proceeds to `defaultNextStep`.
+
+# Layout and Design
+
+- Each step can define its layout using `layout.columns`.
+- Fields can specify `layout.colSpan` to determine the number of columns they span.
